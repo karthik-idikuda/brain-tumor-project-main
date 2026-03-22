@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+tensorflow
+keras
+pillow
+requests
+python-dotenv           # for reading .env file
+psycopg2-binary         # if using PostgreSQL
+newsapi-python          # NewsAPI client for trends
+silence-tensorflow      # suppress TF warnings
+jinja2                  # Server-side templating
+python-multipart        # Required for FastAPI file uploads

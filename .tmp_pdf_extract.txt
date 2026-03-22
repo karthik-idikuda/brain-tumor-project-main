@@ -1,0 +1,77 @@
+
+
+===== PAGE 1 =====
+AI-Powered Brain Tumor Detection Platform with Global Trend Mining and 
+Geospatial User Analytics 
+ 
+Teammates Names: 
+Ishika Kaur 
+K Praveen Kumar 
+Karthik Idikuda 
+ 
+Problem Statement:  
+Brain tumors show varying patterns worldwide due to regional and environmental factors. Existing AI tools 
+classify tumors from MRI scans but do not provide global context or user insights. This project creates a web 
+platform that: 
+ Uses AI for real-time tumor classification from uploaded MRI scans (top priority). 
+ Incorporates Web Mining to extract current global brain tumor trends. 
+ Incorporates Web Analysis to track user locations and interactions. The aim is to show correlations 
+between platform usage and global patterns for improved awareness. 
+ 
+Mining: 
+The project includes Web Mining to pull current global brain tumor trends from public sources. 
+ Display up-to-date incidence and mortality data by region/country. 
+ Include recent mentions of tumor clusters or environmental factors. All from free, legal public APIs and 
+tools. 
+ 
+Web Analysis: 
+ The project includes Web Analysis to monitor real user activity. 
+ Track anonymized interactions (uploads, views). 
+ Map user locations via IP geolocation (with consent). 
+ Display heatmap and compare with mined global trends. 
+  
+Uniqueness of Project 
+ Integrates real-time AI tumor classification with Web Mining and Web Analysis. 
+ Correlates user detections and locations with global public trends. 
+ Provides Web Intelligence context not found in typical medical AI tools. 
+ 
+
+===== PAGE 2 =====
+ 
+Outcome of Project 
+ General Outcome: Working web app for tumor detection plus interactive dashboard showing global 
+trends and user patterns. 
+ Future Use: Aids awareness, research on regional factors, and public health monitoring. 
+ 
+Tech Stack  
+ Programming Languages 
+o Python (backend & AI) 
+o JavaScript (frontend) 
+ Backend Framework 
+o  FastAPI/Flask/ Django 
+ Frontend Framework 
+o  React.js, Vue.js, Plain HTML/CSS/JS + Bootstrap 
+ Database 
+o PostgreSQL/MongoDB/SQLite/MySQL 
+ AI/ML Libraries 
+o TensorFlow / Keras/PyTorch/scikit-learn + CNN 
+ Maps & Geospatial Visualization 
+o Leaflet.js/Google Maps API/Folium 
+ 
+Modules : 
+1. Upload Module  
+2. AI Classification Module  
+3. Web Mining Module 
+4. Web Analytics Module  
+5. Dashboard Module  
+  
+
+===== PAGE 3 =====
+ 
+Conclusion : 
+The proposed platform represents a significant advancement over existing diagnostic tools by fusing the 
+analytical power of AI with the contextual richness of global public health data. It moves beyond a simple, 
+isolated classification to offer a multi-dimensional view of brain tumors. The intended outcome is a user-
+friendly web application that empowers individuals with contextualised knowledge, aids researchers in 
+identifying new patterns, and provides public health officials with a novel lens for understanding the 
+prevalence of brain tumors worldwide. 
