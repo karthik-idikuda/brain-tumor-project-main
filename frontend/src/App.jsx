@@ -10,32 +10,56 @@ import { trackInteraction } from './utils/analytics';
 
 function RouteTracker() {
   const location = useLocation();
+  useEffect(() => { trackInteraction('page_view', location.pathname); }, [location.pathname]);
+  return null;
+}
 
+/* Scroll-reveal observer — fires .visible on elements with .reveal */
+function RevealObserver() {
   useEffect(() => {
-    trackInteraction('page_view', location.pathname);
-  }, [location.pathname]);
-
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } }),
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    const watch = () => document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+    watch();
+    const id = setInterval(watch, 800);
+    return () => { clearInterval(id); observer.disconnect(); };
+  }, []);
   return null;
 }
 
 function App() {
+  const loc = useLocation();
+  const isHome = loc.pathname === '/';
+
   return (
-    <Router>
-      <div className="app-shell d-flex flex-column min-vh-100" data-bs-theme="dark">
-        <RouteTracker />
-        <Navbar />
-        <main className="container py-4 py-lg-5" style={{ flex: 1 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <RevealObserver />
+      <RouteTracker />
+      <Navbar />
+      {isHome ? (
+        <Home />
+      ) : (
+        <main style={{ flex: 1 }}>
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/trends-page" element={<Trends />} />
             <Route path="/analytics-page" element={<Analytics />} />
           </Routes>
         </main>
-        <Footer />
-      </div>
-    </Router>
+      )}
+      <Footer />
+    </div>
   );
 }
 
-export default App;
+export default function WrappedApp() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="*" element={<App />} />
+      </Routes>
+    </Router>
+  );
+}

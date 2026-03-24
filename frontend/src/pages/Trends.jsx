@@ -10,63 +10,72 @@ function Trends() {
 
     useEffect(() => {
         axios.get(`${API_BASE}/trends/`)
-            .then(res => {
-                setNewsData(res.data);
-                setLoading(false);
-            })
-            .catch(err => {
-                setError(err.response?.data?.detail || 'Failed to load news trends.');
-                setLoading(false);
-            });
+            .then(res => { setNewsData(res.data); setLoading(false); })
+            .catch(err => { setError(err.response?.data?.detail || 'Failed to load trends.'); setLoading(false); });
     }, []);
 
     return (
-        <div className="container py-4">
-            <h3 className="fw-bold mb-4"><i className="bi bi-globe2 text-accent"></i> Global <span className="text-accent">Trends</span></h3>
+        <div>
+            {/* ── Page Hero ────────────────────── */}
+            <div className="page-hero">
+                <div className="container" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+                    <div>
+                        <h1>Global Trends</h1>
+                        <p>Real-time brain tumor research news mined from public sources</p>
+                    </div>
+                    {newsData?.articles && (
+                        <span className="tag tag-gray">
+                            <i className="bi bi-newspaper"></i> {newsData.articles.length} article{newsData.articles.length !== 1 ? 's' : ''}
+                        </span>
+                    )}
+                </div>
+            </div>
 
-            {loading ? (
-                <div className="text-center py-5">
-                    <div className="spinner-border text-accent mb-3" style={{ width: '3rem', height: '3rem' }}></div>
-                    <h5>Mining Latest News...</h5>
-                </div>
-            ) : error ? (
-                <div className="alert alert-danger text-center p-4">
-                    <i className="bi bi-x-circle-fill text-danger hero-icon mb-3 d-block"></i>
-                    <h5 className="fw-bold">Trends Unavailable</h5>
-                    <p className="mb-0">{error}</p>
-                </div>
-            ) : (
-                <div className="row g-4">
-                    {newsData?.articles?.map((article, idx) => (
-                        <div key={idx} className="col-md-6 col-lg-4">
-                            <div className="card card-glass h-100 outline-hover">
-                                {article.image_url ? (
-                                    <img src={article.image_url} className="card-img-top object-fit-cover border-bottom border-secondary" style={{ height: '200px' }} alt="News" />
-                                ) : (
-                                    <div className="bg-dark text-muted d-flex align-items-center justify-content-center border-bottom border-secondary" style={{ height: '200px' }}>
-                                        <i className="bi bi-image" style={{ fontSize: '3rem' }}></i>
+            <div className="container" style={{ paddingBottom: '2rem' }}>
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '5rem 0' }}>
+                        <div className="loader" style={{ margin: '0 auto 1.5rem' }}></div>
+                        <h6 style={{ fontWeight: 600 }}>Mining Latest News&hellip;</h6>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Fetching from public health news APIs</p>
+                    </div>
+                ) : error ? (
+                    <div className="chart-card" style={{ textAlign: 'center', padding: '3rem' }}>
+                        <i className="bi bi-wifi-off" style={{ fontSize: '2.5rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.75rem' }}></i>
+                        <h5 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Trends Unavailable</h5>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>{error}</p>
+                    </div>
+                ) : (
+                    <div className="row g-4">
+                        {newsData?.articles?.map((article, idx) => (
+                            <div key={idx} className="col-md-6 col-lg-4">
+                                <div className={`news-card reveal reveal-delay-${(idx % 4) + 1}`}>
+                                    <div className="news-card-img">
+                                        {article.image_url ? (
+                                            <img src={article.image_url} alt="" />
+                                        ) : (
+                                            <i className="bi bi-image" style={{ fontSize: '2.5rem', color: 'var(--text-muted)' }}></i>
+                                        )}
                                     </div>
-                                )}
-                                <div className="card-body d-flex flex-column">
-                                    <h5 className="card-title fs-6 fw-bold text-light mb-2">{article.title}</h5>
-                                    <p className="card-text small text-muted text-truncate-3 flex-grow-1" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                        {article.description || "No description available."}
-                                    </p>
-                                    <div className="mt-3">
-                                        <small className="text-accent d-block mb-2"><i className="bi bi-newspaper"></i> {article.source}</small>
-                                        <a href={article.url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-light w-100">
-                                            Read Full Article <i className="bi bi-box-arrow-up-right ms-1"></i>
-                                        </a>
+                                    <div className="news-card-body">
+                                        <h5>{article.title}</h5>
+                                        <p>{article.description || 'No description available.'}</p>
+                                        <div className="news-card-footer">
+                                            <div className="news-card-source">
+                                                <strong><i className="bi bi-newspaper" style={{ marginRight: 3 }}></i>{article.source}</strong>
+                                                <br />
+                                                <span><i className="bi bi-calendar3" style={{ marginRight: 3 }}></i>{new Date(article.published_at).toLocaleDateString()}</span>
+                                            </div>
+                                            <a href={article.url} target="_blank" rel="noopener noreferrer" className="btn-secondary-custom btn-sm-custom">
+                                                Read <i className="bi bi-arrow-up-right" style={{ marginLeft: 3 }}></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="card-footer bg-transparent border-top-0 pt-0 text-muted small">
-                                    <i className="bi bi-calendar3"></i> {new Date(article.published_at).toLocaleDateString()}
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -13,138 +13,141 @@ function Analytics() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const requests = [axios.get(`${API_BASE}/analytics/predictions`)];
-                if (geoConsent) {
-                    requests.push(axios.get(`${API_BASE}/analytics/my-location/`));
-                }
-
-                const responses = await Promise.all(requests);
-                const histRes = responses[0];
-                const locRes = responses[1] || null;
-
-                setHistory(histRes.data.predictions);
-                setLocation(locRes ? locRes.data : null);
-            } catch (err) {
-                console.error("Analytics fetch error:", err);
-            } finally {
-                setLoading(false);
-            }
+                const reqs = [axios.get(`${API_BASE}/analytics/predictions`)];
+                if (geoConsent) reqs.push(axios.get(`${API_BASE}/analytics/my-location/`));
+                const res = await Promise.all(reqs);
+                setHistory(res[0].data.predictions);
+                setLocation(res[1]?.data ?? null);
+            } catch (err) { console.error('Analytics fetch error:', err); }
+            finally { setLoading(false); }
         };
         fetchData();
     }, [geoConsent]);
 
     return (
-        <div className="container py-4">
-             <div className="row g-4">
-                {/* Location Card */}
-                <div className="col-lg-4">
-                    <div className="card card-glass h-100">
-                        <div className="card-body">
-                            <h5 className="card-title fw-bold mb-4">
-                                <i className="bi bi-geo-alt-fill text-accent me-2"></i> 
-                                Your Connection Profile
-                            </h5>
-                            {loading ? (
-                                <div className="text-center py-4"><div className="spinner-border text-accent"></div></div>
-                            ) : !geoConsent ? (
-                                <div className="text-center p-3 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                                    <p className="text-muted mb-3">Location insights are disabled until consent is enabled.</p>
-                                    <button
-                                        className="btn btn-accent btn-sm"
-                                        onClick={() => {
-                                            setGeoConsent(true);
-                                            setGeoConsentState(true);
-                                            setLoading(true);
-                                        }}
-                                    >
-                                        Enable Location Insights
-                                    </button>
-                                </div>
-                            ) : location ? (
-                                <div className="d-flex flex-column gap-3">
-                                    <div className="d-flex align-items-center gap-3 p-3 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                                        <i className="bi bi-globe fs-2 text-muted"></i>
-                                        <div>
-                                            <p className="text-muted small mb-0">Detected IP Address</p>
-                                            <p className="fw-bold mb-0 font-monospace">{location.ip}</p>
-                                        </div>
+        <div>
+            {/* ── Page Hero ────────────────────── */}
+            <div className="page-hero">
+                <div className="container" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+                    <div>
+                        <h1>User Analytics</h1>
+                        <p>Connection profile, prediction history and session insights</p>
+                    </div>
+                    <span className="tag tag-gray">
+                        <i className="bi bi-clock-history"></i> {history.length} record{history.length !== 1 ? 's' : ''}
+                    </span>
+                </div>
+            </div>
+
+            <div className="container">
+                <div className="row g-4">
+                    {/* ── Connection Profile ──────── */}
+                    <div className="col-lg-4">
+                        <div className="profile-card reveal" style={{ height: '100%' }}>
+                            <div className="profile-card-header">
+                                <i className="bi bi-person-circle" style={{ marginRight: 6 }}></i> Connection Profile
+                            </div>
+                            <div className="profile-card-body">
+                                {loading ? (
+                                    <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+                                        <div className="loader" style={{ margin: '0 auto', width: 36, height: 36, borderWidth: 2 }}></div>
                                     </div>
-                                    <div className="d-flex align-items-center gap-3 p-3 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                                        <i className="bi bi-geo fs-2 text-accent"></i>
-                                        <div>
-                                            <p className="text-muted small mb-0">Detected Location</p>
-                                            <p className="fw-bold mb-0">{location.city}, {location.country}</p>
-                                        </div>
-                                    </div>
-                                    <div className="mt-3 text-center">
-                                        <span className="badge bg-success-subtle border border-success-subtle text-success text-bg-dark w-100 p-2">
-                                            <i className="bi bi-check-circle-fill me-1"></i> Connected & Logging
-                                        </span>
-                                        <p className="text-muted small mt-2">
-                                            Your session is securely established. Activity is logged to build global health heatmaps.
+                                ) : !geoConsent ? (
+                                    <div style={{ textAlign: 'center', padding: '1.5rem', background: 'var(--bg-section)', borderRadius: 'var(--r-md)' }}>
+                                        <i className="bi bi-geo-alt" style={{ fontSize: '2rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.75rem' }}></i>
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                                            Location insights are disabled until consent is granted on the Home page.
                                         </p>
+                                        <button className="btn-accent-solid btn-sm-custom"
+                                            onClick={() => { setGeoConsent(true); setGeoConsentState(true); setLoading(true); }}>
+                                            Enable Location
+                                        </button>
                                     </div>
-                                </div>
-                            ) : (
-                                <p className="text-muted">Unable to detect location context.</p>
-                            )}
+                                ) : location ? (
+                                    <div>
+                                        <div className="profile-row">
+                                            <span className="profile-row-icon"><i className="bi bi-globe"></i></span>
+                                            <div>
+                                                <span className="profile-row-label">IP Address</span>
+                                                <span className="profile-row-value font-mono">{location.ip}</span>
+                                            </div>
+                                        </div>
+                                        <div className="profile-row">
+                                            <span className="profile-row-icon"><i className="bi bi-geo-alt-fill" style={{ color: 'var(--accent)' }}></i></span>
+                                            <div>
+                                                <span className="profile-row-label">Location</span>
+                                                <span className="profile-row-value">{location.city}, {location.country}</span>
+                                            </div>
+                                        </div>
+                                        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                                            <span className="tag tag-green"><i className="bi bi-check-circle-fill"></i> Session Connected</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Unable to detect location context.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* History Table */}
-                <div className="col-lg-8">
-                    <div className="card card-glass h-100">
-                        <div className="card-body">
-                            <h5 className="card-title fw-bold mb-4">
-                                <i className="bi bi-journal-medical text-accent me-2"></i>
-                                Global Prediction History
-                            </h5>
-                            
-                            {loading ? (
-                                <div className="text-center py-5"><div className="spinner-border text-accent"></div></div>
-                            ) : history.length === 0 ? (
-                                <div className="text-center py-5 text-muted">
-                                    <i className="bi bi-inbox fs-1 mb-3 d-block"></i>
-                                    No predictions have been recorded yet.
-                                </div>
-                            ) : (
-                                <div className="table-responsive" style={{ maxHeight: '500px' }}>
-                                    <table className="table table-dark table-hover table-borderless align-middle mb-0">
-                                        <thead className="border-bottom border-light" style={{ borderColor: 'rgba(255,255,255,0.1)!important' }}>
-                                            <tr>
-                                                <th className="text-muted font-monospace small">ID</th>
-                                                <th className="text-muted font-monospace small">TIME</th>
-                                                <th className="text-muted font-monospace small">FILENAME</th>
-                                                <th className="text-muted font-monospace small">RESULT</th>
-                                                <th className="text-muted font-monospace small text-end">CONFIDENCE</th>
-                                                <th className="text-muted font-monospace small text-end">ORIGIN</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {history.map(row => (
-                                                <tr key={row.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                                    <td className="text-muted">#{row.id}</td>
-                                                    <td className="small">{new Date(row.timestamp + 'Z').toLocaleString()}</td>
-                                                    <td><span className="text-truncate d-inline-block" style={{ maxWidth: '120px' }} title={row.filename}>{row.filename}</span></td>
-                                                    <td>
-                                                        <span className={`badge ${row.result === 'Tumor Detected' ? 'bg-danger text-light' : 'bg-success text-light'}`}>
-                                                            {row.result}
-                                                        </span>
-                                                    </td>
-                                                    <td className="text-end fw-semibold font-monospace">{row.confidence}%</td>
-                                                    <td className="text-end">
-                                                        <span className="badge bg-secondary">
-                                                            <i className="bi bi-pin-map-fill me-1"></i>
-                                                            {row.country || 'Unknown'}
-                                                        </span>
-                                                    </td>
+                    {/* ── Prediction History ──────── */}
+                    <div className="col-lg-8">
+                        <div className="chart-card reveal reveal-delay-1" style={{ height: '100%' }}>
+                            <div className="chart-card-header">
+                                <h6 className="chart-card-title">Prediction History</h6>
+                            </div>
+                            <div className="chart-card-body" style={{ padding: 0 }}>
+                                {loading ? (
+                                    <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+                                        <div className="loader" style={{ margin: '0 auto' }}></div>
+                                    </div>
+                                ) : history.length === 0 ? (
+                                    <div style={{ textAlign: 'center', padding: '3rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                        <i className="bi bi-inbox" style={{ fontSize: '2.5rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}></i>
+                                        <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>No predictions yet</p>
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Upload an MRI scan to see results here.</p>
+                                    </div>
+                                ) : (
+                                    <div style={{ overflowX: 'auto', maxHeight: 520 }}>
+                                        <table className="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Time</th>
+                                                    <th>Filename</th>
+                                                    <th>Result</th>
+                                                    <th style={{ textAlign: 'right' }}>Confidence</th>
+                                                    <th style={{ textAlign: 'right' }}>Origin</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+                                            </thead>
+                                            <tbody>
+                                                {history.map(row => (
+                                                    <tr key={row.id}>
+                                                        <td style={{ color: 'var(--text-muted)' }}>#{row.id}</td>
+                                                        <td style={{ fontSize: '0.82rem' }}>{new Date(row.timestamp + 'Z').toLocaleString()}</td>
+                                                        <td>
+                                                            <span style={{ maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }} title={row.filename}>
+                                                                {row.filename}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span className={`tag ${row.result?.toLowerCase().includes('no') ? 'tag-green' : 'tag-rose'}`}>
+                                                                {row.result}
+                                                            </span>
+                                                        </td>
+                                                        <td style={{ textAlign: 'right', fontWeight: 600, fontFamily: "'JetBrains Mono', monospace" }}>{row.confidence}%</td>
+                                                        <td style={{ textAlign: 'right' }}>
+                                                            <span className="tag tag-gray">
+                                                                <i className="bi bi-pin-map-fill"></i> {row.country || 'Unknown'}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
