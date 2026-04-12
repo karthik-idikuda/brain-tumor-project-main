@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://brain-tumor-project-main.vercel.app';
 
 function Trends() {
     const [newsData, setNewsData] = useState(null);

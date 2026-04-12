@@ -65,3 +65,4 @@ target/
 .next/
 .gradle/
 .vite/
+.vercel

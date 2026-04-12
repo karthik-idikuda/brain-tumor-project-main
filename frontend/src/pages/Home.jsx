@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { getGeoConsent, getGeoConsentHeader, setGeoConsent } from '../utils/analytics';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://brain-tumor-project-main.vercel.app';
 
 const IMAGES = {
     brainScan: 'https://images.pexels.com/photos/7089020/pexels-photo-7089020.jpeg?auto=compress&cs=tinysrgb&w=800',

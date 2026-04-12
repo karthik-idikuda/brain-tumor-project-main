@@ -13,7 +13,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 ChartJS.defaults.color = '#6B6B6B';
 ChartJS.defaults.borderColor = '#E8E4DF';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://brain-tumor-project-main.vercel.app';
 
 /* ── Heatmap Layer ──────────────────────────── */
 const HeatmapLayer = ({ points }) => {

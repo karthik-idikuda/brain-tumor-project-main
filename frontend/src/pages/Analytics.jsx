@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getGeoConsent, setGeoConsent } from '../utils/analytics';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://brain-tumor-project-main.vercel.app';
 
 function Analytics() {
     const [history, setHistory] = useState([]);
