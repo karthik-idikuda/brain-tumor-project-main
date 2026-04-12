@@ -7,7 +7,10 @@ from datetime import datetime
 import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DB_PATH = os.path.join(BASE_DIR, "brain_tumor.db")
+if os.environ.get("VERCEL"):
+    DB_PATH = "/tmp/brain_tumor.db"
+else:
+    DB_PATH = os.path.join(BASE_DIR, "brain_tumor.db")
 
 
 def get_connection():
